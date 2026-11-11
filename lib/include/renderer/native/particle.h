@@ -1,0 +1,51 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file particle.h
+ * @brief A particle effect of the game.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "renderer/native/h3d_model.h"
+#include "renderer/address.h"
+
+namespace renderer {
+
+/// A particle effect: one or more models.
+struct Particle {
+  uptr vtable;
+
+  INLINE s32 GetModelCount() {
+    return core::GameFunction<s32(Particle*)>::Call(
+        address::kParticleGetModelCount, this);
+  }
+
+  INLINE H3dModel* GetModel(s32 index) {
+    return core::GameFunction<H3dModel*(Particle*, s32)>::Call(
+        address::kParticleGetModel, this, index);
+  }
+
+  INLINE void SetScale(f32 x, f32 y, f32 z) {
+    return core::GameFunction<void(Particle*, f32, f32, f32)>::Call(
+        address::kParticleSetScale, this, x, y, z);
+  }
+};
+
+} // namespace renderer

@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file type_chart.h
+ * @brief Reads and changes the type chart.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "battle/constant/type_multiplier.h"
+#include "pokemon/constant/type.h"
+
+namespace battle {
+
+/// Reads and changes the type chart of the battles.
+class TypeChart {
+  MAKE_SINGLETON(TypeChart)
+
+public:
+
+  static constexpr u32 kTypeCount = static_cast<u32>(TypeId::kCount);
+  typedef TypeMultiplier Row[kTypeCount];
+
+  /// Installs the hook of the new types. ORAS only.
+  static void Initialize();
+  static void PatchLoad();
+  /// Returns the type chart.
+  static Row* GetTable();
+  /// Changes one cell of the type chart. The cells of a new type are kept by
+  /// the plugin: the game reads them through a hook. A cell with TypeId::kCount
+  /// (no type) does nothing.
+  static void Set(TypeId attacking_type, TypeId defending_type, TypeMultiplier value);
+  /// Returns one cell of the type chart (x1 for TypeId::kCount).
+  static TypeMultiplier Get(TypeId attacking_type, TypeId defending_type);
+  /// Gives all the cells (see GameExtension::SetTypeChart()).
+  static void SetTable(const TypeMultiplier* table, u32 type_count);
+};
+} // namespace battle

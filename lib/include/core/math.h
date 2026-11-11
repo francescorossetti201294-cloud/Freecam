@@ -1,0 +1,77 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file math.h
+ * @brief The vector and matrix types of the game.
+ *
+ * In the 3D world of the game, Y is the height. X and Z are the ground.
+ */
+
+#pragma once
+
+#include "core/types.h"
+
+/// A 2D vector.
+struct Vec2 {
+  f32 x, y;
+
+  Vec2() : x(0), y(0) {}
+  Vec2(f32 x0, f32 y0) : x(x0), y(y0) {}
+};
+
+/// A 3D vector: a position, a direction, a scale or a color (RGB).
+struct Vec3 {
+  f32 x, y, z;
+
+  Vec3() : x(0), y(0), z(0) {}
+  Vec3(f32 x0, f32 y0, f32 z0) : x(x0), y(y0), z(z0) {}
+
+  /// Returns the dot product of two vectors.
+  static float Dot(const Vec3& a, const Vec3& b) {
+    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+  }
+};
+
+/// A 4D vector.
+struct Vec4 {
+  f32 x, y, z, w;
+
+  Vec4() : x(0), y(0), z(0), w(0) {}
+  Vec4(f32 x0, f32 y0, f32 z0, f32 w0) : x(x0), y(y0), z(z0), w(w0) {}
+};
+
+/// A 3x3 matrix.
+struct Mtx33 {
+  f32 m[3][3];
+};
+
+/// A 3x4 matrix: a 3D transformation (rotation, scale and translation).
+struct Mtx34 {
+  f32 m[3][4];
+};
+
+/// A 4x4 matrix: for example a projection.
+struct Mtx44 {
+  f32 m[4][4];
+};
+
+/// An axis-aligned box: the minimum corner and the maximum corner.
+struct Aabb {
+  Vec4 min;
+  Vec4 max;
+};

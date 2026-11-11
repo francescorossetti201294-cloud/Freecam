@@ -1,0 +1,197 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file ground.h
+ * @brief The grounds of the battlefield.
+ */
+
+#pragma once
+
+#include <types.h>
+
+#include "core/game.h"
+
+namespace battle {
+#ifdef GAME_XY
+enum class GroundId : u8 {
+  kNone = 0,
+  kGrass = 1,
+  kFactory = 2,
+  kCave = 3,
+  kForest = 4,
+  kShore = 5,
+  kSnow = 6,
+  kMountain = 7,
+  kRoom = 8,
+  kCity = 9,
+  kTown = 10,
+  kAvenue = 11,
+  kPalace = 12,
+  kLinkBattle = 13,
+  kWater = 14,
+  kSea = 15,
+  kRedLoam = 16,
+  kSnowCave = 17,
+  kMarsh = 18,
+  kMossCave = 19,
+  kMirror = 20,
+  kVictoryRoad = 21,
+  kAlley = 22,
+  kSmallForest = 23,
+  kBugGym = 24,
+  kRockGym = 25,
+  kFightingGym = 26,
+  kGrassGym = 27,
+  kElectricGym = 28,
+  kFairyGym = 29,
+  kPsychicGym = 30,
+  kIceGym = 31,
+  kEliteFourSteel = 32,
+  kEliteFourFire = 33,
+  kEliteFourDragon = 34,
+  kEliteFourWater = 35,
+  kChampion = 36,
+  kFlareBoss = 37,
+  kXerneas = 38,
+  kYveltal = 39,
+  kT02 = 40,
+  kGrassAutumn = 41,
+  kPlain = 42,
+  kDarkRoom = 43,
+  kFlareBase = 44,
+  kWcs = 45,
+  kWcs2 = 46,
+  kParade = 47,
+  kBugGymLeader = 48,
+  kRockGymLeader = 49,
+  kFightingGymLeader = 50,
+  kGrassGymLeader = 51,
+  kElectricGymLeader = 52,
+  kFairyGymLeader = 53,
+  kPsychicGymLeader = 54,
+  kIceGymLeader = 55,
+  kSky = 56,
+  kMega = 57,
+  kWaterSnowPlain = 58,
+  kWaterSnowCave = 59,
+  kWaterCave = 60,
+  kWaterAutumn = 61,
+  kPlainAutumn = 62,
+  kPlainBridge = 63,
+  kMarshAutumn = 64,
+};
+#else
+enum class GroundId : u8 {
+  kNone = 0,
+  kGrass = 1,
+  kFactory = 2,
+  kCave = 3,
+  kForest = 4,
+  kShore = 5,
+  kMountain = 6,
+  kIndoors = 7,
+  kCity = 8,
+  kTown = 9,
+  kPalace = 10,
+  kCommunication = 11,
+  kWater = 12,
+  kSea = 13,
+  kSnowCave = 14,
+  kMirrorDungeon = 15,
+  kRockGymLeader = 16,
+  kFightingGymLeader = 17,
+  kElectricGymLeader = 18,
+  kFireGymLeader = 19,
+  kNormalGymLeader = 20,
+  kFlyingGymLeader = 21,
+  kPsychicGymLeader = 22,
+  kWaterGymLeader = 23,
+  kEliteFourDark = 24,
+  kEliteFourIce = 25,
+  kEliteFourGhost = 26,
+  kEliteFourDragon = 27,
+  kChampionBattle = 28,
+  kDarkRoom = 29,
+  kWcs = 30,
+  kWcs2 = 31,
+  kRockGymLeader2 = 32,
+  kFightingGymLeader2 = 33,
+  kElectricGymLeader2 = 34,
+  kFireGymLeader2 = 35,
+  kNormalGymLeader2 = 36,
+  kFlyingGymLeader2 = 37,
+  kPsychicGymLeader2 = 38,
+  kWaterGymLeader2 = 39,
+  kSkyBattle = 40,
+  kWaterCave = 41,
+  kGrey = 42,
+  kDesert = 43,
+  kVolcanic = 44,
+  kCityShore = 45,
+  kFord = 46,
+  kCityFord = 47,
+  kSeabed = 48,
+  kStoneCave = 49,
+  kWaterfallCave = 50,
+  kSeabedCave = 51,
+  kWaterfall = 52,
+  kUnderseaAquaHideout = 53,
+  kCycling = 54,
+  kShip = 55,
+  kCemetery = 56,
+  kSkyPillar = 57,
+  kPokemonRuby = 58,
+  kPokemonSapphire = 59,
+  kPokemonEmerald = 60,
+  kPokemonLegendary = 61,
+  kContestACool = 62,
+  kContestABeautiful = 63,
+  kContestACute = 64,
+  kContestAClever = 65,
+  kContestAStrong = 66,
+  kContestBCool = 67,
+  kContestBBeautiful = 68,
+  kContestBCute = 69,
+  kContestBClever = 70,
+  kContestBStrong = 71,
+  kContestCCool = 72,
+  kContestCBeautiful = 73,
+  kContestCCute = 74,
+  kContestCClever = 75,
+  kContestCStrong = 76,
+  kContestDCool = 77,
+  kContestDBeautiful = 78,
+  kContestDCute = 79,
+  kContestDClever = 80,
+  kContestDStrong = 81,
+  kContestOpening = 82,
+  kContestEnding = 83,
+  kAquaBoss = 84,
+  kMagmaBoss = 85,
+  kSkyPillarTop = 86,
+  kDeoxys = 87,
+  kVolcano = 88,
+  kVictoryRoad = 89,
+  kAllNightEvent = 90,
+  kAquaHideoutCave = 91,
+  kAbandonedShip = 92,
+};
+#endif
+} // namespace battle
+
+using battle::GroundId;

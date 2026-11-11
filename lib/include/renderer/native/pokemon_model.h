@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file pokemon_model.h
+ * @brief A Pokémon model of the game.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "renderer/native/archive/bch.h"
+
+namespace renderer {
+/// A Pokémon model: its model file and its texture file.
+struct PokemonModel {
+  INLINE Bch& GetModel() const {
+    return *(Bch*)model->GetResource(0);
+  }
+
+  INLINE Bch& GetTexture() const {
+    return *(Bch*)texture->GetResource(0);
+  }
+
+  void* vtable;
+  u32 _0[123];
+  Bundle* model;
+  Bundle* face_animation;
+  Bundle* texture;
+};
+} // namespace renderer

@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file draw_model.h
+ * @brief The drawn part of an overworld model.
+ */
+
+#pragma once
+
+#include "core/game.h"
+#include "core/math.h"
+#include "core/types.h"
+
+namespace overworld {
+
+/// The drawn part of an overworld model: position, rotation and scale.
+struct DrawModel {
+  u8 _0[GAME_CONSTANT(0x154, 0x150)];
+  Vec3 position;
+  Vec3 rotation;
+  Vec3 scale;
+  /// The bits of the changes. The function of the game that sets the scale
+  /// turns on kDirty after it writes the scale: the game then calculates the
+  /// matrices of the model again. A change of the fields above needs it too.
+  u32 flags;
+
+  static constexpr u32 kDirty = 0x800;
+};
+
+} // namespace overworld

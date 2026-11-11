@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file gift_pokemon.h
+ * @brief Changes the gift Pokémon.
+ */
+
+#pragma once
+
+#include "common.h"
+
+namespace overworld {
+
+/// Changes the gift Pokémon of the game.
+class GiftPokemon {
+  MAKE_SINGLETON(GiftPokemon)
+
+public:
+  bool randomize_species = false; ///< true: each gift Pokémon gets a random species.
+
+  static void Initialize();
+
+  /// Runs the script function that gives a Pokémon, without the randomizer.
+  static s32 AddPokemonWithoutRandomizer(u32* a1, u32* a2);
+
+private:
+  static void RandomizeSpecies(u32 idx);
+  static s32 ScriptAddPokemonToTeamHook(u32* a1, u32* a2);
+};
+
+} // namespace overworld

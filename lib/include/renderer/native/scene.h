@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file scene.h
+ * @brief The 3D scene of the game.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "renderer/native/h3d_shader_model.h"
+#include "renderer/address.h"
+
+namespace renderer {
+/// Adds models to the 3D scene and removes them.
+struct Scene {
+  /// Adds a model to the scene, without the changes of
+  /// renderer::ModelFilter.
+  static bool Register0(void* scene, H3dShaderModel* model, s32 x = 0);
+
+  STATIC_INLINE bool Register1(void* scene, H3dShaderModel* model,
+                               s32 x = 0) {
+    return core::GameFunction<bool(void*, H3dShaderModel*, s32)>::Call(
+        address::kSceneRegister1, scene, model, x);
+  }
+
+  STATIC_INLINE void Unregister(void* scene, H3dShaderModel* model) {
+    core::GameFunction<void(void*, H3dShaderModel*)>::Call(
+        address::kSceneUnregister, scene, model);
+  }
+};
+} // namespace renderer

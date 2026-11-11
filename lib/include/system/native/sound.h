@@ -1,0 +1,66 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file sound.h
+ * @brief Plays the music, the sound effects and the Pokémon cries.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "pokemon/constant/species.h"
+#include "system/constant/background_music.h"
+#include "system/address.h"
+
+namespace sys {
+
+/// Plays the music, the sound effects and the Pokémon cries.
+class Sound {
+  SINGLETON(Sound)
+public:
+  /// A sound id contains its bank in the 16 high bits.
+  static constexpr u32 kBankBackgroundMusic = 1 << 16;
+  static constexpr u32 kBankSoundEffect = 6 << 16;
+
+  /// Plays the cry of a species.
+  STATIC_INLINE void PlayPokemonCry(SpeciesId species) {
+    core::GameFunction<void(u8, SpeciesId, u16, u8, u8)>::Call(
+        address::kSoundPlayPokemonCry, 0, species, 0, 0, 0);
+  }
+
+  /// Changes the volume of the cries.
+  STATIC_INLINE void ChangePokemonCryVolume(f32 volume) {
+    core::GameFunction<void(u8, f32, u32)>::Call(
+        address::kSoundChangePokemonCryVolume, 0, volume, 0);
+  }
+
+  /// Plays a sound effect of the sound effect bank.
+  STATIC_INLINE void PlaySoundEffect(u32 index) {
+    core::GameFunction<void(u32, u32, s32, u32)>::Call(
+        address::kSoundPlaySoundEffect, kBankSoundEffect + index, 0, 0, 0);
+  }
+
+  /// Plays a background music.
+  STATIC_INLINE void PlayBackgroundMusic(BackgroundMusicId music) {
+    core::GameFunction<void(u32, u32, u32, u32)>::Call(
+        address::kSoundPlayBackgroundMusic,
+        kBankBackgroundMusic + static_cast<u32>(music), 10, 10, 1);
+  }
+};
+
+} // namespace sys

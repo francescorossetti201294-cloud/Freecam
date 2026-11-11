@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file address.h
+ * @brief The addresses of the renderer domain: 3D models, particles, 2D layouts.
+ */
+
+#pragma once
+
+#include "core/game.h"
+#include "core/types.h"
+
+namespace renderer {
+namespace address {
+
+constexpr uptr kFadeRequestIn = GAME_ADDRESS(0x00359CD8, 0x00371518);
+
+constexpr uptr kGraphicsGetFramebuffer = GAME_ADDRESS(0x0012F9F8, 0x0012FA94);
+constexpr uptr kGraphicsBindFramebuffer = GAME_ADDRESS(0x00359FA0, 0x003717E0);
+constexpr uptr kGraphicsEnableScissor = GAME_ADDRESS(0x0038C7B0, 0x003A30A8);
+constexpr uptr kGraphicsDisableScissor = GAME_ADDRESS(0x0038C98C, 0x003A3284);
+constexpr uptr kGraphicsBeginRender = GAME_ADDRESS(0x00174B20, 0x00175A58);
+constexpr uptr kGraphicsSetTextScale = GAME_ADDRESS(0x0038CBA0, 0x003A3498);
+constexpr uptr kGraphicsDrawText = GAME_ADDRESS(0x0038DB54, 0x003A44C4);
+constexpr uptr kGraphicsDrawRect = GAME_ADDRESS(0x00174CA4, 0x00175BDC);
+/// The drawing state of the 2D functions above. Its command list (at
+/// +0x9C) is valid only in the parts of the game that draw with it (the
+/// overworld, the battles...): not in the menus of the Pokemon and the Bag.
+constexpr uptr kGraphicsState = GAME_ADDRESS(0, 0x0066E008);
+/// The address of the next command of the current command list.
+constexpr uptr kGraphicsCommandCursor = GAME_ADDRESS(0, 0x0061E0BC);
+/// Returns the width of a text (sys::Graphics::GetTextWidth).
+constexpr uptr kGraphicsGetTextWidth = GAME_ADDRESS(0, 0x003A36D8);
+/// Draws a 3D scene with a camera on a render target. All the ways to draw a
+/// scene end here, also the draw of the top screen in 3D (one call for each
+/// eye). Arguments: scene, graphics, camera, render target, an int, a bool.
+/// ORAS only (overworld::WorldOverlay).
+constexpr uptr kSceneDraw = GAME_ADDRESS(0, 0x00392098);
+/// Draws a 3D scene for the two eyes at once, with a stereo camera (the top
+/// screen in 3D). It does not call kSceneDraw. Arguments: scene, graphics,
+/// stereo camera, a bool. ORAS only (overworld::WorldOverlay).
+constexpr uptr kSceneStereoDraw = GAME_ADDRESS(0, 0x003896D4);
+/// Gives the view matrix and the projection matrix of a camera.
+constexpr uptr kCameraGetMatrices = GAME_ADDRESS(0, 0x004CBDD4);
+constexpr uptr kStereoCameraUpdateMatrices = GAME_ADDRESS(0x003609A8, 0x00377C10);
+constexpr uptr kStereoCameraUpdateLookAt = GAME_ADDRESS(0x00148FD8, 0x001483DC);
+constexpr uptr kStereoCameraSetProjectionMatrix = GAME_ADDRESS(0x0037CE5C, 0x003939CC);
+constexpr uptr kModelPlayAnimation = GAME_ADDRESS(0x003DB040, 0x003FB1B4);
+/// XY: not verified (a vtable slot, 3 candidates).
+constexpr uptr kModelUpdateMotion = GAME_ADDRESS(0x006F8028, 0x00774D9C);
+constexpr uptr kChangeOutlineScale = GAME_ADDRESS(0x00362BD4, 0x00379E3C);
+constexpr uptr kChangeOutlineColor = GAME_ADDRESS(0x00362A14, 0x00379C7C);
+constexpr uptr kChangeAmbientLightColor = GAME_ADDRESS(0x0013A140, 0x00139710);
+constexpr uptr kChangeDiffuseLightColor = GAME_ADDRESS(0x0013A1F0, 0x001397C0);
+/// The function that calculates the matrix of a pane of a 2D layout (a menu
+/// of the game). The game calls it for each pane, one time for each frame,
+/// after the animations and before the drawing. ORAS only.
+constexpr uptr kPaneUpdateMatrix = GAME_ADDRESS(0, 0x0032224C);
+/// The vtables of the kinds of panes of the 2D layouts. ORAS only.
+constexpr uptr kPaneVtable = GAME_ADDRESS(0, 0x005DBE18);
+constexpr uptr kPictureVtable = GAME_ADDRESS(0, 0x005DBFB4);
+constexpr uptr kWindowVtable = GAME_ADDRESS(0, 0x005DBF20);
+constexpr uptr kTextBoxVtable = GAME_ADDRESS(0, 0x005DC040);
+constexpr uptr kBoundingVtable = GAME_ADDRESS(0, 0x005DC0D4);
+constexpr uptr kAppStatusSetupGraphicsParams = GAME_ADDRESS(0x006C5C60, 0x007144FC);
+constexpr uptr kAppStatusSetupGraphicsMoves = GAME_ADDRESS(0x006C32B8, 0x0070DDC0);
+constexpr uptr kAppStatusSetupGraphicsContest = GAME_ADDRESS(0, 0x0070D3D4);
+constexpr uptr kAppStatusSetupGraphicsInfos = GAME_ADDRESS(0x006C4878, 0x007116E4);
+constexpr uptr kH3dModelGetMaterialCount = GAME_ADDRESS(0x0049D284, 0x004CD168);
+constexpr uptr kH3dModelSetCombinerCombineRgb = GAME_ADDRESS(0x00382E9C, 0x00399920);
+constexpr uptr kH3dModelSetCombinerScaleRgb = GAME_ADDRESS(0x00382CE0, 0x003997AC);
+constexpr uptr kH3dModelSetCombinerSourceRgb = GAME_ADDRESS(0x00382DD8, 0x00399880);
+constexpr uptr kH3dModelSetCombinerOperandRgb = GAME_ADDRESS(0x00382EC8, 0x0039994C);
+constexpr uptr kH3dModelSetCombinerConstant = GAME_ADDRESS(0x00382C30, 0x003996FC);
+constexpr uptr kH3dModelSetColorConstant = GAME_ADDRESS(0x00381EFC, 0x003988C8);
+constexpr uptr kH3dModelSetMeshVisible = GAME_ADDRESS(0x0037FF7C, 0x0039694C);
+constexpr uptr kH3dModelSetCombinerCombineAlpha = GAME_ADDRESS(0x00383148, 0x00399C44);
+constexpr uptr kH3dModelSetCombinerSourceAlpha = GAME_ADDRESS(0x00382FB8, 0x00399A94);
+constexpr uptr kH3dModelSetCombinerOperandAlpha = GAME_ADDRESS(0x00383174, 0x00399C70);
+constexpr uptr kH3dModelSetTranslucencyKind = GAME_ADDRESS(0x003822B0, 0x00398C7C);
+constexpr uptr kH3dModelSetAlphaTestEnable = GAME_ADDRESS(0x003821E8, 0x00398BB4);
+constexpr uptr kH3dModelSetBlendMode = GAME_ADDRESS(0x0036A1C8, 0x0038149C);
+constexpr uptr kH3dModelSetBlendFuncSourceRgb = GAME_ADDRESS(0x00382B44, 0x00399610);
+constexpr uptr kH3dModelSetBlendFuncDestRgb = GAME_ADDRESS(0x003830D4, 0x00399BD0);
+constexpr uptr kH3dModelSetBlendEquationRgb = GAME_ADDRESS(0x0038223C, 0x00398C08);
+constexpr uptr kH3dModelSetBufferInputRgb = GAME_ADDRESS(0x003831A8, 0x00399CA4);
+constexpr uptr kH3dModelSetBufferInputAlpha = GAME_ADDRESS(0x0038323C, 0x00399D60);
+
+constexpr uptr kH3dResourceInitialize = GAME_ADDRESS(0x0035D490, 0x00374E7C);
+constexpr uptr kH3dResourceSetData = GAME_ADDRESS(0x0035C900, 0x00374310);
+constexpr uptr kH3dResourceSetup = GAME_ADDRESS(0x0035D294, 0x00374C80);
+constexpr uptr kH3dResourceRemoveData = GAME_ADDRESS(0x0035C91C, 0x0037432C);
+constexpr uptr kH3dShaderModelInitialize = GAME_ADDRESS(0x00452B08, 0x00482458);
+constexpr uptr kH3dShaderModelCreate = GAME_ADDRESS(0x0045295C, 0x004822E0);
+constexpr uptr kH3dShaderModelVtable = GAME_ADDRESS(0x0059E724, 0x005E118C);
+constexpr uptr kH3dPokemonShaderModelVtable = GAME_ADDRESS(0x0059E89C, 0x005E1318);
+
+constexpr uptr kH3dModelSetTranslate = GAME_ADDRESS(0x0037FDA4, 0x00396774);
+constexpr uptr kH3dModelGetTranslate = GAME_ADDRESS(0x0049D104, 0x004CCFD8);
+constexpr uptr kH3dModelSetRotate = GAME_ADDRESS(0x0037FD10, 0x003966E0);
+constexpr uptr kH3dModelSetScale = GAME_ADDRESS(0x00384B78, 0x0039B594);
+constexpr uptr kH3dModelSetShaderSymbol = GAME_ADDRESS(0x003812D0, 0x00397BCC);
+/// More functions of the 3D models. ORAS only.
+constexpr uptr kH3dModelSetVisible = GAME_ADDRESS(0, 0x00396558);
+constexpr uptr kH3dModelSetMeshNodeVisible = GAME_ADDRESS(0, 0x00396CE8);
+constexpr uptr kH3dModelSetMaterialColorAmbient = GAME_ADDRESS(0, 0x00397DFC);
+constexpr uptr kH3dModelSetMaterialColorDiffuse = GAME_ADDRESS(0, 0x00397E6C);
+constexpr uptr kH3dModelSetCullingMode = GAME_ADDRESS(0, 0x00399814);
+constexpr uptr kH3dModelGetMeshNodeCount = GAME_ADDRESS(0, 0x004CD1B8);
+constexpr uptr kH3dModelGetMeshNodeName = GAME_ADDRESS(0, 0x004CD0D8);
+constexpr uptr kH3dModelIsMeshNodeVisible = GAME_ADDRESS(0, 0x004CD258);
+constexpr uptr kH3dModelGetMaterialName = GAME_ADDRESS(0, 0x004CD094);
+/// The light set of a material (the set of lights that lights the material). ORAS only.
+constexpr uptr kH3dModelSetMaterialLightSet = GAME_ADDRESS(0, 0x003989B0);
+constexpr uptr kH3dModelGetMaterialLightSet = GAME_ADDRESS(0, 0x004CD6C8);
+/// Makes a directional light and a light set, and adds them to a scene.
+/// Arguments: heap allocator, device allocator, an array of two pointers for
+/// the light and the set, the scene, the calculation group, the light set
+/// number. ORAS only.
+constexpr uptr kCreateSceneLight = GAME_ADDRESS(0, 0x0045435C);
+/// Removes the set of lights of a number from a scene (give null as the set),
+/// and removes a node (a light) from the calculation list of a scene. A scene
+/// that keeps a light after the game freed its memory freezes the game. ORAS only.
+constexpr uptr kSceneSetLightSet = GAME_ADDRESS(0, 0x00389FEC);
+/// The colours of a light: ambient, diffuse and the two speculars. Each takes a
+/// light and three numbers (red, green, blue). ORAS only.
+constexpr uptr kLightSetAmbient = GAME_ADDRESS(0, 0x00386D78);
+constexpr uptr kLightSetDiffuse = GAME_ADDRESS(0, 0x00386EE4);
+constexpr uptr kLightSetSpecular0 = GAME_ADDRESS(0, 0x0038702C);
+constexpr uptr kLightSetSpecular1 = GAME_ADDRESS(0, 0x0038717C);
+constexpr uptr kSceneRemoveNodeFromCalc = GAME_ADDRESS(0, 0x0038C1E4);
+/// The setters of the texture coordinates of a material: the scale, the turn
+/// and the move of the UV. ORAS only.
+constexpr uptr kH3dModelSetUvScale = GAME_ADDRESS(0, 0x003999AC);
+constexpr uptr kH3dModelSetUvRotate = GAME_ADDRESS(0, 0x00399AC8);
+constexpr uptr kH3dModelSetUvTranslate = GAME_ADDRESS(0, 0x00399D0C);
+/// The functions of the skeleton of a model: the number of bones and the name
+/// of a bone. ORAS only.
+constexpr uptr kH3dModelGetBonesCount = GAME_ADDRESS(0, 0x004CCFF0);
+constexpr uptr kH3dModelGetBonesName = GAME_ADDRESS(0, 0x004CCD64);
+/// The function that writes the draw commands of one mesh of a model with a
+/// skeleton. Its third argument is the state of the skeleton. ORAS only.
+constexpr uptr kMeshDrawCommand = GAME_ADDRESS(0, 0x004BC8C4);
+/// The vtable of the textures that the game makes while it runs (the textures
+/// of the Pokemon). ORAS only.
+constexpr uptr kH3dDynamicTextureVtable = GAME_ADDRESS(0, 0x005DDC08);
+/// The function that sets the frame of an animation of a layout (this, the
+/// animation, the frame). ORAS only.
+constexpr uptr kLayoutSeekAnimation = GAME_ADDRESS(0, 0x00111AF4);
+/// The function that applies an animation of a layout to a material (the
+/// animation, the number of the part, the material), and the function that
+/// updates a texture of a material after the change. ORAS only.
+constexpr uptr kLayoutPlayMaterialAnimation = GAME_ADDRESS(0, 0x003217A4);
+constexpr uptr kLayoutRefreshImage = GAME_ADDRESS(0, 0x00325A64);
+/// The function that gives an image of a layout resource (a texture), and the
+/// function that makes a texture of a BCLIM image in memory. ORAS only.
+constexpr uptr kLayoutGetImage = GAME_ADDRESS(0, 0x004C8FF0);
+constexpr uptr kLayoutMakeImage = GAME_ADDRESS(0, 0x00134AD8);
+/// The function that removes a model from a scene (the game calls it before it
+/// destroys the model). ORAS only.
+constexpr uptr kSceneRemoveModel = GAME_ADDRESS(0, 0x003917D0);
+constexpr uptr kH3dModelDestroy = GAME_ADDRESS(0x003843B0, 0x0039AED4);
+
+constexpr uptr kSceneRegister0 = GAME_ADDRESS(0x00374B94, 0x0038B600);
+constexpr uptr kSceneRegister1 = GAME_ADDRESS(0x00374EBC, 0x0038B928);
+constexpr uptr kSceneUnregister = GAME_ADDRESS(0x0037AC84, 0x003917D0);
+
+/// XY: not verified.
+constexpr uptr kWeatherEffectRain = GAME_ADDRESS(0x005EF13C, 0x00631144);
+
+constexpr uptr kParticleGetModelCount = GAME_ADDRESS(0x0049E164, 0x004CE068);
+constexpr uptr kParticleGetModel = GAME_ADDRESS(0x0049E4B4, 0x004CE3B8);
+constexpr uptr kParticleSetScale = GAME_ADDRESS(0x003869F8, 0x0039D260);
+constexpr uptr kParticleCreate = GAME_ADDRESS(0x00385D90, 0x0039C5F4);
+constexpr uptr kResourceAttachBufferAndSetup = GAME_ADDRESS(0x0038710C, 0x0039D974);
+
+// Not verified: the function may not exist.
+constexpr uptr kGraphicsSetMaterial = GAME_ADDRESS(0x0014E5E4, 0x0014DA94);
+
+constexpr uptr kApplyShader = GAME_ADDRESS(0x00381FE4, 0x003989B0);
+constexpr uptr kApplyShader2 = GAME_ADDRESS(0x003717B0, 0x003881EC);
+
+} // namespace address
+} // namespace renderer

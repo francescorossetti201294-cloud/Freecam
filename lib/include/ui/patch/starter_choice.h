@@ -1,0 +1,49 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file starter_choice.h
+ * @brief Changes the starter Pokémon.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "pokemon/constant/species.h"
+
+namespace ui {
+
+/// Changes the three starter Pokémon of the starter selection.
+class StarterChoice {
+  MAKE_SINGLETON(StarterChoice)
+
+public:
+  static constexpr u32 kCount = 3;
+  SpeciesId candidates[kCount] = {SpeciesId::kNone, SpeciesId::kNone,
+                                SpeciesId::kNone};
+  bool is_egg[kCount] = {false, false, false};
+
+  static void PatchLoad();
+
+private:
+  static constexpr u32 kViewStride = 0x54;
+  static constexpr u32 kModelStride = 0x170;
+
+  static void Apply(PokeInfo* info, SpeciesId species, bool is_egg);
+};
+
+} // namespace ui

@@ -1,0 +1,281 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file core_data.h
+ * @brief The saved data of one Pokémon (the PK6 format).
+ *
+ * The game encrypts this data. Use pokemon::EditPokemon to change it and
+ * pokemon::ReadPokemon() to read it (pokemon/edit_pokemon.h).
+ */
+
+#pragma once
+#include "common.h"
+#include "pokemon/native/utils.h"
+#include "pokemon/constant/ability.h"
+#include "pokemon/constant/ball.h"
+#include "pokemon/constant/form.h"
+#include "pokemon/constant/gender.h"
+#include "pokemon/constant/item.h"
+#include "pokemon/constant/move.h"
+#include "pokemon/constant/nature.h"
+#include "pokemon/constant/species.h"
+#include "pokemon/address.h"
+
+namespace pokemon {
+
+/**
+ * @brief The saved data of one Pokémon: species, moves, EVs, IVs, trainer...
+ *
+ * The data has a header and four blocks of 0x38 bytes. The game encrypts it
+ * and changes the order of the blocks: see DataAccessor.
+ */
+struct CoreData {
+  // The header (0x08 bytes).
+  u32 encryption_key; // 04
+  union {
+    u16 _0; // 06
+    struct {
+      u16 fast_mode : 1;
+      u16 fast_mode_param : 1;
+      u16 is_illegal_egg : 1;
+      u16 _header_bits : 13;
+    };
+  };
+  u16 checksum; // 08
+
+  // Block 1 (0x38 bytes).
+  SpeciesId species; // 02
+  ItemId item; // 04
+
+  u32 id; // 08
+
+  u32 experience; // 0C
+
+  AbilityId ability; // 0D
+  u8 ability_flags; // 0E
+  u8 super_training_bag_hit_count; // 0F
+  u8 super_training_bag_type; // 10
+
+  u32 shiny_id; // 14
+
+  Nature nature; // 15
+  union {
+    u8 event_gender_form_flags; // 16
+    struct {
+      u8 event : 1;
+      Gender gender : 2;
+      FormId form : 5;
+    };
+  };
+
+  u8 ev_hp; // 17
+  u8 ev_attack; // 18
+
+  u8 ev_defense; // 19
+  u8 ev_speed; // 1A
+  u8 ev_special_attack; // 1B
+  u8 ev_special_defense; // 1C
+
+  struct {
+    u8 cool; // 1D
+    u8 beautiful; // 1E
+    u8 cute; // 1F
+    u8 smart; // 20
+
+    u8 tough; // 21
+    u8 sheen; // 22
+  } contest;
+
+  u8 box_mark_flags; // 23
+  u8 pokerus_flags; // 24
+
+  u32 super_training_flags; // 28
+
+  u32 ribbon_flags[2];
+
+  u16 other_ribbon_flags; // 32
+  u16 other_super_ribbon_flags; // 34
+
+  u32 furfrou_remaining_trim_days; // 38
+
+  // Block 2 (0x38 bytes).
+  c16 nickname[13]; // 1A
+  MoveId moves[4]; // 22
+  u8 pp[4]; // 26
+  u8 pp_up_count[4]; // 2A
+  u16 egg_moves[4]; // 32
+  u8 secret_super_training_flags; // 33
+  u8 _1; // 34
+
+  union {
+    u32 iv_flags; // 38
+    struct {
+      u32 iv_hp : 5;
+      u32 iv_attack : 5;
+      u32 iv_defense : 5;
+      u32 iv_speed : 5;
+      u32 iv_special_attack : 5;
+      u32 iv_special_defense : 5;
+      u32 is_egg : 1;
+      u32 use_nickname : 1;
+    };
+  };
+
+  // Block 3 (0x38 bytes).
+  c16 first_trainer_name[13]; // 1A
+  u8 first_trainer_gender; // 1B
+  u8 __0;
+  u16 __1[7];
+  u8 __2;
+  u8 happiness;
+  u16 __4[6];
+
+  // Block 4 (0x38 bytes).
+  c16 original_trainer_name[13]; // 1A
+  union {
+    u8 training_friendship; // 1B
+    u8 remaining_steps_before_hatch;
+  };
+
+  u8 contest_friendship; // 1C
+  u8 _3[5]; // 21
+
+  u8 egg_year; // 22
+  u8 egg_month; // 23
+  u8 egg_day; // 24
+
+  u8 met_year; // 25
+  u8 met_month; // 26
+  u8 met_day; // 27
+
+  u8 _4; // 28
+
+  u16 egg_location; // 2A
+  u16 met_location; // 2C
+  Ball ball; // 2D
+  u8 captured_level_owner_gender_flags; // 2E
+
+  u8 _5; // 2F
+  u8 game_version; // 30
+  u8 country; // 31
+  u8 region; // 32
+  u8 console_region; // 33
+  Language language; // 34
+  u32 _6; // 38
+
+  static constexpr u32 kBlockSize = 0x38;
+  static constexpr u32 kBlockCount = 4;
+
+  /// Returns the address of a block (0 to 3).
+  INLINE void* GetBlock(u32 index) {
+    uptr addr = (uptr)this;
+    return (void*)(addr + 8 + index * kBlockSize);
+  }
+
+  /// Sets the nickname (12 characters at most).
+  void SetNickname(const c16* nickname) {
+    u32 src_len = 0;
+    while (src_len < 12 && nickname[src_len] != u'\0') {
+      this->nickname[src_len] = nickname[src_len];
+      src_len++;
+    }
+    this->nickname[src_len] = u'\0';
+    this->use_nickname = true;
+  }
+
+  /// Sets the name of the species as the nickname.
+  void ResetNickname() {
+    c16 buffer[13];
+    core::GameFunction<void(c16*, SpeciesId)>::Call(
+        address::kGetDefaultNickname, buffer, species);
+    SetNickname(buffer);
+    use_nickname = false;
+  }
+
+  /// Makes the Pokémon shiny or not shiny.
+  void SetShiny(bool is_shiny) {
+    if (is_shiny) {
+      Utils::ConvertToShiny(id, &shiny_id);
+    } else {
+      Utils::ConvertToNormal(id, &shiny_id);
+    }
+  }
+
+  /// Sets the experience points of a level.
+  void SetLevel(u8 level) {
+    experience = Utils::GetExperienceFromLevel(species, form, level);
+  }
+
+  /// Sets the six IVs to 31.
+  void SetMaxIVs() {
+    iv_hp = 31;
+    iv_attack = 31;
+    iv_defense = 31;
+    iv_speed = 31;
+    iv_special_attack = 31;
+    iv_special_defense = 31;
+  }
+
+  /// Sets the six contest stats to 255.
+  void SetMaxContest() {
+    contest.beautiful = 255;
+    contest.cool = 255;
+    contest.cute = 255;
+    contest.sheen = 255;
+    contest.smart = 255;
+    contest.tough = 255;
+  }
+
+  /// Sets the species, the held item, the ability, the nature and the shiny state.
+  void Set(SpeciesId species, ItemId item, AbilityId ability, Nature nature,
+           bool is_shiny) {
+    this->species = species;
+    this->item = item;
+    this->ability = ability;
+    this->nature = nature;
+    SetShiny(is_shiny);
+  }
+
+  /// Sets the six EVs, and the six IVs to 31.
+  void SetStats(u8 hp, u8 atk, u8 def, u8 sp_atk,
+                u8 sp_def, u8 spd) {
+    SetMaxIVs();
+    ev_hp = hp;
+    ev_attack = atk;
+    ev_defense = def;
+    ev_special_attack = sp_atk;
+    ev_special_defense = sp_def;
+    ev_speed = spd;
+  }
+
+  /// Sets the four moves.
+  void SetMoves(MoveId move1, MoveId move2, MoveId move3, MoveId move4) {
+    moves[0] = move1;
+    moves[1] = move2;
+    moves[2] = move3;
+    moves[3] = move4;
+  }
+
+  /// Returns the sum of the six EVs.
+  u32 GetTotalPower() const {
+    return ev_hp + ev_attack + ev_defense + ev_special_attack
+           + ev_special_defense + ev_speed;
+  }
+};
+
+} // namespace pokemon

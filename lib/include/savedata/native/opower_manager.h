@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file opower_manager.h
+ * @brief The O-Powers.
+ */
+
+#pragma once
+#include "savedata/native/savedata.h"
+
+namespace savedata {
+/// The O-Powers that the player knows, and their uses.
+struct OPowerManager {
+  SINGLETON(OPowerManager)
+
+  STATIC_INLINE OPowerManager& GetInstance() {
+    return SaveData::GetInstance().GetOPowerManager();
+  }
+
+  void* vtable;
+  bool learned_powers[65];
+  u8 power_points;
+  u8 overworld_power_level_1_uses[10];
+  u8 overworld_power_level_2_uses[10];
+  u8 battle_power_level_1_uses[7];
+  u8 battle_power_level_2_uses[7];
+};
+} // namespace savedata

@@ -1,0 +1,60 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file type.h
+ * @brief The types.
+ */
+
+#pragma once
+
+#include <types.h>
+
+namespace pokemon {
+
+/// A type of a Pokémon or of a move.
+enum class TypeId : u8 {
+  kNormal = 0,
+  kFighting = 1,
+  kFlying = 2,
+  kPoison = 3,
+  kGround = 4,
+  kRock = 5,
+  kBug = 6,
+  kGhost = 7,
+  kSteel = 8,
+  kFire = 9,
+  kWater = 10,
+  kGrass = 11,
+  kElectric = 12,
+  kPsychic = 13,
+  kIce = 14,
+  kDragon = 15,
+  kDark = 16,
+  kFairy = 17,
+  /// The number of types of the game. It is also the value of "no type": a
+  /// Pokémon with one type has this value for its second type.
+  kCount = 18,
+  /// The first and the last number of a new type (ORAS only, see
+  /// battle::GameExtension::AddType()). A new type does not use kCount,
+  /// because the game uses it for "no type".
+  kFirstCustom = 19,
+  kLastCustom = 31,
+};
+} // namespace pokemon
+
+using pokemon::TypeId;

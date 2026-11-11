@@ -1,0 +1,69 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file misc.h
+ * @brief The money, the badges and other data of the player.
+ */
+
+#pragma once
+#include "common.h"
+#include "savedata/native/savedata.h"
+
+namespace savedata {
+/// The money, the badges, the rival name and other data of the player.
+struct Misc {
+  SINGLETON(Misc)
+  STATIC_INLINE Misc& GetInstance() {
+    return SaveData::GetInstance().GetMisc();
+  }
+
+  /// Returns the number of Gym Badges.
+  INLINE u32 GetBadgesCount() {
+    u32 count = 0;
+    for (u32 i = 0; i < 8; i++) {
+      if (badges & (1 << i)) count++;
+    }
+    return count;
+  }
+
+  static constexpr u32 kNicknameLength = 13;
+
+  void* vtable;
+  u32 padding0;
+  u64 random_value;
+
+  u32 money;
+  u32 badges;
+
+  c16 rival_nickname[kNicknameLength];
+  c16 padding1;
+
+  u32 flags;
+#ifdef GAME_XY
+  u32 tutorial_pokemon_amie;
+  u32 tutorial_super_training;
+  u32 flags2;
+#endif
+  u32 battle_points;
+
+  /// The Mega Evolutions that the player saw: one bit for each species of
+  /// the Mega Evolution table (bit 0: Gengar, bit 1: Gardevoir, bit 2:
+  /// Ampharos, bit 3: Venusaur...).
+  u8 has_encountered_mega_evolution[8];
+};
+} // namespace savedata

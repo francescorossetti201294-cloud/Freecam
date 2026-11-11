@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file box_manager.h
+ * @brief The names and the wallpapers of the PC boxes.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "savedata/native/savedata.h"
+
+namespace savedata {
+/// The names and the wallpapers of the PC boxes.
+struct BoxManager {
+  SINGLETON(BoxManager)
+
+  STATIC_INLINE BoxManager& GetInstance() {
+    return SaveData::GetInstance().GetBoxManager();
+  }
+
+  static constexpr u32 kMaxBoxes = 31;
+
+  static constexpr u32 kMaxWallpapers = 24;
+
+  /// The size of a box name, in characters (with the end character).
+  static constexpr u32 kMaxTitleLength = 17;
+
+  void* vtable;
+
+  c16 titles[kMaxBoxes][kMaxTitleLength];
+
+  u8 wallpapers[kMaxBoxes];
+
+  u8 flags;
+
+  u8 unlocked_count;
+
+  u8 active_box_index;
+};
+} // namespace savedata

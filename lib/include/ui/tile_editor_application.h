@@ -1,0 +1,73 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file tile_editor_application.h
+ * @brief The application of the tile editor.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "overworld/native/tile.h"
+#include "system/native/controller.h"
+#include "ui/application.h"
+
+namespace sys {
+class Controller;
+class Graphics;
+}
+
+namespace ui {
+/// Shows the tiles around the player on the bottom screen and changes their attributes.
+class TileEditorApplication : public Application {
+  MAKE_SINGLETON(TileEditorApplication)
+
+public:
+  static constexpr s32 kTileSize = 8;
+  static constexpr s32 kColumns = 320 / kTileSize;
+  static constexpr s32 kRows = 240 / kTileSize;
+
+  /// Opens the tile editor.
+  static void Open();
+
+  void Update(sys::Controller& controller) override;
+  void DrawTop(sys::Graphics& graphics) override;
+  void DrawBottom(sys::Graphics& graphics) override;
+
+private:
+  enum Property : u32 {
+    kGround,
+    kFootstep,
+    kBattleBackground,
+    kDiagonal,
+    kPropertyCount
+  };
+
+  void Adjust(s32 delta);
+  void Paint();
+  Color ColorOf(const overworld::Tile& tile) const;
+
+  s32 cursor_x_ = 0;
+  s32 cursor_z_ = 0;
+  u32 property_ = kGround;
+  u32 brush_ = 0;
+  bool has_brush_ = false;
+  bool saved_ = false;
+};
+} // namespace ui
+

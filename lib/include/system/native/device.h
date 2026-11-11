@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file device.h
+ * @brief The input devices of the console.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "system/native/core.h"
+#include "system/address.h"
+
+namespace sys {
+class Controller;
+class TouchScreen;
+class DPad;
+
+/// The input devices: the buttons, the D-pad and the touch screen.
+class Device {
+  SINGLETON(Device)
+
+public:
+  /// The input channel of the plugin. The game uses other channels.
+  static constexpr u8 kCustomChannel = 0x13;
+
+  STATIC_INLINE Device& GetInstance() {
+    return Core::GetInstance().GetDevice();
+  }
+
+  INLINE Controller& GetController() {
+    return core::GameFunction<Controller &(Device*, u32)>::Call(
+        address::kDeviceGetController, this, 0);
+  }
+
+  INLINE DPad& GetDPad() {
+    return core::GameFunction<DPad &(Device*, u32)>::Call(
+        address::kDeviceGetDpad, this, 0);
+  }
+
+  INLINE TouchScreen& GetTouchScreen() {
+    return core::GameFunction<TouchScreen &(Device*, u32)>::Call(
+        address::kDeviceGetTouchscreen, this, 0);
+  }
+};
+
+} // namespace sys
+

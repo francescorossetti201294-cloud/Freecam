@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file process_handle.h
+ * @brief A link in the list of the running processes.
+ */
+
+#pragma once
+
+#include "core/constant/process_state.h"
+#include "core/native/base_process.h"
+
+namespace core {
+
+/// A link in the list of the running processes of the game.
+class ProcessHandle {
+public:
+  BaseProcess* GetProcess() const { return process_; }
+
+public:
+  ProcessState state_;
+  ProcessHandle* parent_;
+  ProcessHandle* child_;
+  BaseProcess* process_;
+};
+
+} // namespace core

@@ -1,0 +1,150 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file address.h
+ * @brief The addresses of the system domain: files, buttons, sound, memory.
+ */
+
+#pragma once
+
+#include "core/game.h"
+#include "core/types.h"
+
+namespace sys {
+namespace address {
+
+// The files.
+constexpr uptr kFileOpen = GAME_ADDRESS(0x001237E8, 0x00123FA8);
+constexpr uptr kFileClose = GAME_ADDRESS(0x0012387C, 0x0012403C);
+constexpr uptr kFileRead = GAME_ADDRESS(0x0014688C, 0x00145CF0);
+constexpr uptr kFileWrite = GAME_ADDRESS(0x001E1438, 0x001F5BE0);
+constexpr uptr kFsMountSdmc = GAME_ADDRESS(0x001E3554, 0x001F7CFC);
+constexpr uptr kFsCreateFile = GAME_ADDRESS(0x001E14A8, 0x001F5C50);
+constexpr uptr kFsDeleteFile = GAME_ADDRESS(0x001E1524, 0x001F5CCC);
+constexpr uptr kFsCreateDirectory = GAME_ADDRESS(0x001E1764, 0x001F5F0C);
+constexpr uptr kArchiveFilenameTable = GAME_ADDRESS(0x005B21E0, 0x005F5050);
+constexpr uptr kArchiveReadFileAsync = GAME_ADDRESS(0x003560B4, 0x0036DC68);
+constexpr uptr kArchiveReadFileAsync2 = GAME_ADDRESS(0x0035715C, 0x0036ED10);
+constexpr uptr kArchiveLoadData = GAME_ADDRESS(0x0035747C, 0x0036F030);
+constexpr uptr kArchiveLoadData2 = GAME_ADDRESS(0x00138510, 0x00128E4C);
+constexpr uptr kArchiveInitialize = GAME_ADDRESS(0x0011C724, 0x0011CA2C);
+constexpr uptr kArchiveGetFileSize = GAME_ADDRESS(0x0011C708, 0x0011CA10);
+constexpr uptr kArchiveGetFileSize2 = GAME_ADDRESS(0, 0x00110E10);
+constexpr uptr kArchiveGetInfo = GAME_ADDRESS(0, 0x0012894C);
+constexpr uptr kArchiveRead = GAME_ADDRESS(0, 0x001288DC);
+/// Starts the read of a part of a file in a thread.
+constexpr uptr kFileStartAsyncRead = GAME_ADDRESS(0x00356D6C, 0x0036E920);
+constexpr uptr kArchiveLoadFile = GAME_ADDRESS(0x00128100, 0x00128B34);
+constexpr uptr kArchiveLoadCompressedFile = GAME_ADDRESS(0x001283D8, 0x00137A30);
+
+// The buttons and the touch screen.
+constexpr uptr kDeviceGetController = GAME_ADDRESS(0x001174D0, 0x00117550);
+/// The Circle Pad: the device of a number (0 is the Circle Pad of the console),
+/// then its position at the last frame, from -1 to 1 on each axis. ORAS only.
+constexpr uptr kCirclePadDevice = GAME_ADDRESS(0, 0x004C812C);
+constexpr uptr kCirclePadReadX = GAME_ADDRESS(0, 0x004C7B64);
+constexpr uptr kCirclePadReadY = GAME_ADDRESS(0, 0x004C7B70);
+constexpr uptr kControllerIsKeyPressed = GAME_ADDRESS(0x00498BBC, 0x004C86EC);
+constexpr uptr kControllerIsKeyReleased = GAME_ADDRESS(0x00498B84, 0x004C86B4);
+constexpr uptr kControllerIsKeyRepeated = GAME_ADDRESS(0x00498B0C, 0x004C863C);
+constexpr uptr kControllerIsKeyDown = GAME_ADDRESS(0x00498AD4, 0x004C8604);
+constexpr uptr kControllerGetRepeatedKey = GAME_ADDRESS(0x00498B4C, 0x004C867C);
+/// The masks of the buttons that went down or up at this frame (the first
+/// parameter is the device, the second one is the channel). ORAS only.
+constexpr uptr kControllerGetNewButtons = GAME_ADDRESS(0, 0x004C82D4);
+constexpr uptr kControllerGetReleasedButtons = GAME_ADDRESS(0, 0x004C82A4);
+constexpr uptr kDeviceGetDpad = GAME_ADDRESS(0x00498590, 0x004C80E0);
+constexpr uptr kDpadIsPressed = GAME_ADDRESS(0x00498368, 0x004C8030);
+constexpr uptr kDpadIsRepeated = GAME_ADDRESS(0x00498288, 0x004C7F50);
+constexpr uptr kDpadIsDown = GAME_ADDRESS(0x00498230, 0x004C7EF8);
+constexpr uptr kDpadIsDown2 = GAME_ADDRESS(0x00497F34, 0x004C7BEC);
+constexpr uptr kDpadIsReleased2 = GAME_ADDRESS(0x00497F54, 0x004C7C0C);
+constexpr uptr kDeviceGetTouchscreen = GAME_ADDRESS(0x004985CC, 0x004C810C);
+constexpr uptr kTouchscreenIsPressed = GAME_ADDRESS(0x00497AA8, 0x004C77D4);
+constexpr uptr kTouchscreenIsRepeated = GAME_ADDRESS(0x00497A48, 0x004C7774);
+constexpr uptr kTouchscreenIsReleased = GAME_ADDRESS(0x00497A80, 0x004C77AC);
+constexpr uptr kTouchscreenIsDown = GAME_ADDRESS(0x00497CCC, 0x004C79F8);
+constexpr uptr kTouchscreenGetX = GAME_ADDRESS(0x00497C20, 0x004C794C);
+constexpr uptr kTouchscreenGetY = GAME_ADDRESS(0x00497C48, 0x004C7974);
+
+// The sounds.
+constexpr uptr kSoundPlayPokemonCry = GAME_ADDRESS(0x00427988, 0x004500C0);
+constexpr uptr kSoundChangePokemonCryVolume = GAME_ADDRESS(0x004265B4, 0x0044EB4C);
+constexpr uptr kSoundPlaySoundEffect = GAME_ADDRESS(0x00427550, 0x0044FC88);
+constexpr uptr kSoundPlayBackgroundMusic = GAME_ADDRESS(0x004260FC, 0x0044E6CC);
+/// Starts the music of a battle: fades out the music of the overworld, saves
+/// it and plays the music of the battle. Parameters: the field sound object,
+/// the music id, the fade frames.
+constexpr uptr kSoundStartBattleMusic = GAME_ADDRESS(0x00425238, 0x0044D560);
+/// Ends the music of a battle: fades it out and gives the music of the
+/// overworld back (ORAS only). Parameter: the music to play next, or -1.
+constexpr uptr kSoundEndBattleMusic = GAME_ADDRESS(0, 0x0044E360);
+/// Fades the music in (ORAS only). Parameter: the fade frames.
+constexpr uptr kSoundFadeInMusic = GAME_ADDRESS(0, 0x0044D35C);
+/// The sound manager of the game: the pointer at +4 leads to the music
+/// player, which keeps the id of the playing music at +0x20 (ORAS only).
+constexpr uptr kSoundManager = GAME_ADDRESS(0, 0x005F4F88);
+/// Opens a file of the sound archive by its path (a music file).
+constexpr uptr kSoundOpenStreamFile = GAME_ADDRESS(0x0031B3B4, 0x0032FCE8);
+
+// The system.
+constexpr uptr kMessageGetString = GAME_ADDRESS(0x0013A498, 0x00139A34);
+/// Reads a text of a text file that the game loads when it needs it (the
+/// context, the number of the text, the number of the text file, the
+/// result). The Message object that this function uses keeps 0 as its
+/// file number. ORAS only.
+constexpr uptr kGetTextOfFile = GAME_ADDRESS(0, 0x00451440);
+constexpr uptr kStringVtable = GAME_ADDRESS(0x0059B9F8, 0x005DE3BC);
+constexpr uptr kEntrypoint =
+    GAME_ADDRESS(0x001220D0, 0x00122938); // The function of each frame that plugin::Start() hooks
+constexpr uptr kGameManager = GAME_ADDRESS(0x005EDA08, 0x0062F7C4);
+constexpr uptr kCallApp = GAME_ADDRESS(0x003B389C, 0x003CFBA8);
+constexpr uptr kOsReadOnlyKernelInfo = GAME_ADDRESS(0x1FF80000, 0x1FF80000);
+constexpr uptr kHeapTable = GAME_ADDRESS(0x08000000, 0x08000000);
+constexpr uptr kStdWcslen = GAME_ADDRESS(0x001003E4 | 1, 0x001003E8 | 1);
+constexpr uptr kStdVswprintf = GAME_ADDRESS(0x001004B4 | 1  , 0x001004B8 | 1);
+/// The size of the text buffers of the library, in characters.
+constexpr u32 kBufferSize = 128;
+constexpr uptr kGetRandomValue = GAME_ADDRESS(0x0045C358, 0x0048AF80);
+constexpr uptr kGetElapsedTime = GAME_ADDRESS(0x0012AF08, 0x0012B724);
+constexpr uptr kConvertTimeToSeconds = GAME_ADDRESS(0x0012FB40, 0x0012FBDC);
+constexpr uptr kDateTime = GAME_ADDRESS(0x005D45E0, 0x006174F8);
+constexpr uptr kGetSystemDateTime = GAME_ADDRESS(0x00146F78, 0x001463DC);
+constexpr uptr kCheckAppRequest = GAME_ADDRESS(0x00770584, 0x007BDE50);
+constexpr uptr kMainProcessLoop = GAME_ADDRESS(0x00394E88, 0x003AB62C);
+constexpr uptr kMainEventLoop = GAME_ADDRESS(0x00117D7C, 0x00117E4C);
+constexpr uptr kGameTextManagerGetText = GAME_ADDRESS(0x0013A498, 0x00139A34);
+
+constexpr uptr kHeapAlloc = GAME_ADDRESS(0x0012B4C0, 0x0011ED58);
+constexpr uptr kHeapFree = GAME_ADDRESS(0x0013A808, 0x00139DA4);
+constexpr uptr kGetHeapById = GAME_ADDRESS(0x0012B4D0, 0x0012BCA4);
+
+/// The first address of the game code.
+constexpr uptr kProcessMemoryStart = GAME_ADDRESS(0x00100000, 0x00100000);
+/// XY: the CRO memory ends near 0x7EC000.
+constexpr uptr kProcessMemoryEnd = GAME_ADDRESS(0x00800000, 0x00900000);
+
+/// The memory of the CRO of the current process (the overworld or a battle).
+/// The CRO code is read-only: use MEMORY_SCOPE() to change it.
+constexpr uptr kMemoryRegionCro = GAME_ADDRESS(0x006A9000, 0x006F3000); // XY: overworld CRO base in the X memory dump
+constexpr uptr kMemoryRegionAppStatus = GAME_ADDRESS(0x006C1000, 0x0070B000);
+constexpr uptr kMemoryRegionTitleScreen = GAME_ADDRESS(0x006A9000, 0x00728000);
+constexpr uptr kMemoryRegionKeyboard = GAME_ADDRESS(0x006A9000, 0x00742000);
+
+} // namespace address
+} // namespace sys

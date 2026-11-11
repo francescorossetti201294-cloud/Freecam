@@ -1,0 +1,107 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file model_manager.h
+ * @brief The characters of the overworld.
+ */
+
+#pragma once
+
+#include "common.h"
+#include "core/native/data_manager.h"
+#include "overworld/native/model.h"
+#include "overworld/native/model_resource.h"
+#include "renderer/native/h3d_resource.h"
+
+namespace overworld {
+
+/// The characters of the current map (32 at most).
+class ModelManager {
+  SINGLETON(ModelManager)
+
+public:
+  static constexpr u32 kPlayerId = 0xFF;
+
+  STATIC_INLINE ModelManager& GetInstance() {
+    return core::DataManager::GetInstance().GetOverworldModelManager();
+  }
+
+  /// Returns the manager, or null outside of the overworld.
+  STATIC_INLINE ModelManager* GetInstanceOrNull() {
+    ModelManager* manager =
+        core::DataManager::GetInstance().GetOverworldModelManagerOrNull();
+    if (manager == nullptr || manager->overworld_models_ == nullptr) {
+      return nullptr;
+    }
+    return manager;
+  }
+
+  INLINE ModelResource& GetResource(u32 idx) { return resources_[idx]; }
+
+  /// Returns the character of the player.
+  Model& GetPlayer() {
+    for (u32 i = 0; i < kMaxModels; i++) {
+      Model& model = *(Model*)((uptr)overworld_models_ + Model::kSize * i);
+      if (model.id == kPlayerId) {
+        return model;
+      }
+    }
+    return overworld_models_[0];
+  }
+
+  /// Returns the character in a slot.
+  INLINE Model& GetModel(u32 idx) {
+    return *(Model*)((uptr)overworld_models_ + Model::kSize * idx);
+  }
+
+  INLINE void* Get3DModelManager() {
+    return *(void**)((uptr)&resource_count_ - 8);
+  }
+
+  static constexpr u32 kMaxModels = 32;
+
+  INLINE void* Get3DModelManager() const { return move_3d_model_manager_; }
+
+  INLINE renderer::H3dResource* GetShaderResource() const {
+    if (move_3d_model_manager_ == nullptr) return nullptr;
+    auto* resource = *(renderer::H3dResource**)(
+      (uptr)move_3d_model_manager_ + kCharacterShaderOffset);
+    if (resource == nullptr || !resource->IsValid()) return nullptr;
+    return resource;
+  }
+
+private:
+  static constexpr u32 kCharacterShaderOffset = 0x2EA8;
+
+  void* heap_;
+  core::DataManager* game_data_manager_;
+  void* _0[GAME_CONSTANT(6, 5)];
+  u8 _1[GAME_CONSTANT(0x1470, 0x3680)];
+  Model* overworld_models_;
+  u32 overworld_model_count_;
+
+  void* _2[6];
+  void* move_3d_model_manager_;
+  void* effect_manager_;
+
+public:
+  u32 resource_count_;
+  u32 resource_count_2_;
+  ModelResource resources_[kMaxModels];
+};
+} // namespace overworld

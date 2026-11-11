@@ -1,0 +1,36 @@
+/*
+ * Copyright (C) 2026  David Darras
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file engine_workspace.h
+ * @brief The work data of the script engine.
+ */
+
+#pragma once
+
+#include "core/types.h"
+#include "core/game.h"
+#include "script/native/shared_workspaces.h"
+
+namespace script {
+
+struct EngineWorkspace {
+  u8 _0[GAME_CONSTANT(0x7C, 0x88)];
+  SharedWorkspaces shared;
+};
+
+} // namespace script
