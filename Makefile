@@ -20,7 +20,7 @@ endif
 export TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
-PLUGIN_VERSION  := 1.2.0
+PLUGIN_VERSION  := 1.1.0
 PLUGIN_CREATOR  := FreeCamera
 PLUGIN_NAME     := FreeCamera
 

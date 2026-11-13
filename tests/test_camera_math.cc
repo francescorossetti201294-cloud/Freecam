@@ -53,22 +53,17 @@ int main() {
   { float we, wn; freecam::TurnByCamera(0, 0, 1.0f, &we, &wn);
     CHECK(Near(we, 0) && Near(wn, 0), "no stick, no move"); }
 
-  // The limit of the turn (around the view of the game, which is 0).
+  // The limit of the turn.
   {
-    CHECK(Near(freecam::LimitYaw(0.0f), 0.0f), "limit: no turn stays");
-    CHECK(Near(freecam::LimitYaw(10.0f), freecam::kYawLimit), "limit: high");
-    CHECK(Near(freecam::LimitYaw(-10.0f), -freecam::kYawLimit), "limit: low");
-    // The tilt: a game camera at 0.9 rad may go between 0.10 and 1.40.
-    CHECK(Near(freecam::LimitPitchDelta(5.0f, 0.9f), 1.40f - 0.9f), "pitch: high");
-    CHECK(Near(freecam::LimitPitchDelta(-5.0f, 0.9f), 0.10f - 0.9f), "pitch: low");
-    // A game camera outside the range (1.5 rad): never pushed back by itself.
-    CHECK(Near(freecam::LimitPitchDelta(0.0f, 1.5f), 0.0f), "pitch: outside stays");
-    CHECK(freecam::LimitPitchDelta(0.3f, 1.5f) <= 0.0f, "pitch: no more up");
+    // freecam::kYawLimit is 1.22: the camera stays near the view of the game.
+    CHECK(Near(freecam::LimitYaw(pi / 2), pi / 2), "limit: the default stays");
+    CHECK(Near(freecam::LimitYaw(10.0f), pi / 2 + freecam::kYawLimit), "limit: high");
+    CHECK(Near(freecam::LimitYaw(-10.0f), pi / 2 - freecam::kYawLimit), "limit: low");
   }
 
   // The camera position for the default yaw is south (+z) of the player.
   {
-    float yaw = pi / 2, pitch = 0.55f, d = 260.0f;
+    float yaw = pi / 2, pitch = 0.55f, d = freecam::kDistance;
     float flat = d * std::cos(pitch);
     float px = flat * std::cos(yaw), pz = flat * std::sin(yaw);
     CHECK(Near(px, 0) && pz > 0, "default camera is south of the player");

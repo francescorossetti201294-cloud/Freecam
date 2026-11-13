@@ -7,12 +7,8 @@ hook e le funzioni per sostituire la telecamera del gioco. Tutto il resto
 
 ## Cosa fa
 
-Nell'overworld la telecamera **orbita attorno al punto che il gioco inquadra** (di
-solito il personaggio) e lo segue quando cammina, ma **non ruota mai da sola**:
-l'angolo lo cambi solo tu. Parte dalla telecamera del gioco (stessa distanza,
-stesso bersaglio, stesso angolo) e ci aggiunge la tua rotazione. Senza rotazione
-il plugin restituisce la telecamera del gioco com'è, quindi le scene con una
-telecamera propria (inizio di una nuova partita, eventi, ROM hack) restano giuste.
+Nell'overworld la telecamera **orbita attorno al personaggio** e lo segue quando
+cammina, ma **non ruota mai da sola**: l'angolo lo cambi solo tu.
 Il movimento con lo **stick analogico sinistro** è **relativo alla telecamera**:
 "su" porta il personaggio lontano da te, qualunque sia l'angolo, e se giri la
 visuale mentre cammini il personaggio gira con lei.
@@ -23,7 +19,7 @@ La croce direzionale (movimento a passi) non segue la telecamera.
 | Stick destro (C‑Stick) | Gira la telecamera (destra/sinistra) e la inclina (su/giù) |
 | L / R | Gira a sinistra / destra (utile senza stick destro) |
 | ZL / ZR | Abbassa / alza la telecamera (New 3DS) |
-| L + R insieme | Rimette la visuale normale del gioco |
+| L + R insieme | Rimette la telecamera dietro al personaggio |
 
 Le battaglie e le altre schermate usano la telecamera normale del gioco.
 
@@ -60,9 +56,8 @@ Su console con Luma3DS: stessa cartella, poi L + Giù + Select → Plugin Loader
 ## Regolare la telecamera
 
 All'inizio di `src/free_camera.cc` ci sono le impostazioni: distanza
-(`kDistanceScale`, 1.0 = quella del gioco), velocità di rotazione
-(`kYawSpeed`, `kPitchSpeed`), limite di rotazione (`kYawLimit`), zona morta,
-Y invertito (`kInvertPitch`).
+(`kDistance`), angolo iniziale (`kStartPitch`), velocità di rotazione
+(`kYawSpeed`, `kPitchSpeed`), zona morta, Y invertito (`kInvertPitch`).
 Dopo averle cambiate, ricompila.
 
 ## Cose da sapere (stato del lavoro)
