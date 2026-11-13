@@ -7,19 +7,30 @@ hook e le funzioni per sostituire la telecamera del gioco. Tutto il resto
 
 ## Cosa fa
 
-Nell'overworld la telecamera **orbita attorno al personaggio** e lo segue quando
-cammina, ma **non ruota mai da sola**: l'angolo lo cambi solo tu.
-Il movimento è **relativo alla telecamera**: "su" porta il personaggio lontano
-da te, qualunque sia l'angolo.
+Nell'overworld la telecamera **orbita attorno al punto che il gioco inquadra** (di
+solito il personaggio) e lo segue quando cammina, ma **non ruota mai da sola**:
+l'angolo lo cambi solo tu. Parte dalla telecamera del gioco (stessa distanza,
+stesso bersaglio, stesso angolo) e ci aggiunge la tua rotazione. Senza rotazione
+il plugin restituisce la telecamera del gioco com'è, quindi le scene con una
+telecamera propria (inizio di una nuova partita, eventi, ROM hack) restano giuste.
+Il movimento con lo **stick analogico sinistro** è **relativo alla telecamera**:
+"su" porta il personaggio lontano da te, qualunque sia l'angolo, e se giri la
+visuale mentre cammini il personaggio gira con lei.
+La croce direzionale (movimento a passi) non segue la telecamera.
 
 | Comando | Azione |
 |---|---|
 | Stick destro (C‑Stick) | Gira la telecamera (destra/sinistra) e la inclina (su/giù) |
 | L / R | Gira a sinistra / destra (utile senza stick destro) |
 | ZL / ZR | Abbassa / alza la telecamera (New 3DS) |
-| L + R insieme | Rimette la telecamera dietro al personaggio |
+| L + R insieme | Rimette la visuale normale del gioco |
 
 Le battaglie e le altre schermate usano la telecamera normale del gioco.
+
+La telecamera può girare al massimo di circa 70° rispetto alla visuale normale
+del gioco: le mappe sono costruite come un palcoscenico e il **retro delle case
+non esiste** come modello. Per girare di 360° metti `kYawLimit = 3.14159f`
+(vedrai però i retri vuoti).
 
 ## Come ottenere il file .3gx (senza installare nulla)
 
@@ -49,8 +60,9 @@ Su console con Luma3DS: stessa cartella, poi L + Giù + Select → Plugin Loader
 ## Regolare la telecamera
 
 All'inizio di `src/free_camera.cc` ci sono le impostazioni: distanza
-(`kDistance`), angolo iniziale (`kStartPitch`), velocità di rotazione
-(`kYawSpeed`, `kPitchSpeed`), zona morta, Y invertito (`kInvertPitch`).
+(`kDistanceScale`, 1.0 = quella del gioco), velocità di rotazione
+(`kYawSpeed`, `kPitchSpeed`), limite di rotazione (`kYawLimit`), zona morta,
+Y invertito (`kInvertPitch`).
 Dopo averle cambiate, ricompila.
 
 ## Cose da sapere (stato del lavoro)
@@ -60,9 +72,11 @@ Dopo averle cambiate, ricompila.
   simboli del link e un test della matematica in `tests/`).
 - Il C‑Stick si legge con il servizio di sistema `ir:rst`. Se non è disponibile,
   restano L, R, ZL e ZR.
-- Il movimento relativo alla telecamera si basa su come Sango riscrive la
-  direzione del giocatore (`GetPlayerMovement`). Bici, surf e altre andature
-  potrebbero comportarsi in modo diverso: se succede, è un difetto da correggere.
+- Per camminare relativi alla telecamera il plugin ruota la posizione dello stick
+  che il gioco legge mentre calcola il movimento. Se il personaggio non segue la
+  telecamera, prova `kTurnStickEverywhere = true` in `src/free_camera.cc`
+  (ma poi i menu nell'overworld vedranno lo stick ruotato).
+  Bici, surf e altre andature potrebbero comportarsi in modo diverso.
 - La telecamera non evita i muri: dentro le case può attraversarli.
 
 ## Licenza e crediti

@@ -38,22 +38,37 @@ int main() {
   ExpectTurn("north cam up",    -pi / 2,  0,  1,  0, -1);
   ExpectTurn("north cam right", -pi / 2,  1,  0, -1,  0);
 
-  // The 8 directions.
-  using overworld::Facing;
-  CHECK(freecam::QuantizeDirection( 1,  0) == Facing::kRight,     "q east");
-  CHECK(freecam::QuantizeDirection( 1,  1) == Facing::kUpRight,   "q ne");
-  CHECK(freecam::QuantizeDirection( 0,  1) == Facing::kUp,        "q north");
-  CHECK(freecam::QuantizeDirection(-1,  1) == Facing::kUpLeft,    "q nw");
-  CHECK(freecam::QuantizeDirection(-1,  0) == Facing::kLeft,      "q west");
-  CHECK(freecam::QuantizeDirection(-1, -1) == Facing::kDownLeft,  "q sw");
-  CHECK(freecam::QuantizeDirection( 0, -1) == Facing::kDown,      "q south");
-  CHECK(freecam::QuantizeDirection( 1, -1) == Facing::kDownRight, "q se");
-  CHECK(freecam::QuantizeDirection( 0.38f, 0.92f) == Facing::kUp,      "q 67 deg -> north");
-  CHECK(freecam::QuantizeDirection( 0.92f, 0.38f) == Facing::kRight,   "q 22 deg -> east");
+  // The turn keeps the length of the stick (a stick at the end stays at the end).
+  {
+    const float angles[] = {-3.0f, -1.2f, 0.0f, 0.7f, 1.9f, 3.1f};
+    for (float yaw : angles) {
+      for (float k = 0; k < 6.28f; k += 0.4f) {
+        float e = 0.8f * std::cos(k), n = 0.8f * std::sin(k), we, wn;
+        freecam::TurnByCamera(e, n, yaw, &we, &wn);
+        CHECK(Near(std::sqrt(we * we + wn * wn), 0.8f), "the turn keeps the length");
+      }
+    }
+  }
+  // A stick that does not move gives no move.
+  { float we, wn; freecam::TurnByCamera(0, 0, 1.0f, &we, &wn);
+    CHECK(Near(we, 0) && Near(wn, 0), "no stick, no move"); }
+
+  // The limit of the turn (around the view of the game, which is 0).
+  {
+    CHECK(Near(freecam::LimitYaw(0.0f), 0.0f), "limit: no turn stays");
+    CHECK(Near(freecam::LimitYaw(10.0f), freecam::kYawLimit), "limit: high");
+    CHECK(Near(freecam::LimitYaw(-10.0f), -freecam::kYawLimit), "limit: low");
+    // The tilt: a game camera at 0.9 rad may go between 0.10 and 1.40.
+    CHECK(Near(freecam::LimitPitchDelta(5.0f, 0.9f), 1.40f - 0.9f), "pitch: high");
+    CHECK(Near(freecam::LimitPitchDelta(-5.0f, 0.9f), 0.10f - 0.9f), "pitch: low");
+    // A game camera outside the range (1.5 rad): never pushed back by itself.
+    CHECK(Near(freecam::LimitPitchDelta(0.0f, 1.5f), 0.0f), "pitch: outside stays");
+    CHECK(freecam::LimitPitchDelta(0.3f, 1.5f) <= 0.0f, "pitch: no more up");
+  }
 
   // The camera position for the default yaw is south (+z) of the player.
   {
-    float yaw = pi / 2, pitch = 0.55f, d = freecam::kDistance;
+    float yaw = pi / 2, pitch = 0.55f, d = 260.0f;
     float flat = d * std::cos(pitch);
     float px = flat * std::cos(yaw), pz = flat * std::sin(yaw);
     CHECK(Near(px, 0) && pz > 0, "default camera is south of the player");
